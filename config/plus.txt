@@ -1,0 +1,1 @@
+KUT_fieldstar,./teams/KUT_fieldstar/start.sh,opuSCOM2020,./teams/opuSCOM2020/start.sh,Fifty-Storms,./teams/Fifty-Storms/start.sh,opuHam2020,./teams/opuHam2020/start.sh,jyo_sen2020,./teams/jyo_sen2020/start.sh
