@@ -1,0 +1,43 @@
+#!/bin/sh
+
+echo "\033[0m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo " \033[1m\033[38;5;10mjyo_sen2020"
+echo " \033[38;5;9mCopyright 2020 Riku Ueda"
+echo " All rights reserved."
+echo "\033[0m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+HOST=$1
+BASEDIR=$2
+NUM=$3
+
+port=6000
+Port=6002
+
+teamname="jyo_sen2020"
+
+player="./bin/player"
+coach="./bin/coach"
+
+config="./bin/conf/player.conf"
+config_dir="./bin/formations-dt"
+coach_config="./bin/conf/coach.conf"
+
+opt="--player-config ${config} --config_dir ${config_dir}"
+opt="${opt} -h ${HOST} -t ${teamname} -p ${port}"
+
+coachopt="--coach-config ${coach_config}"
+coachopt="${coachopt} -h ${HOST} -t ${teamname} -P ${Port} --use_team_graphic on --team_graphic_file logo.xpm"
+
+cd $BASEDIR
+
+case $NUM in
+    1)
+        $player $opt -g
+        ;;
+    12)
+        $coach $coachopt
+        ;;
+    *)
+        $player $opt
+        ;;
+esac

@@ -1,0 +1,95 @@
+#!/bin/sh
+
+HOST=$1
+BASEDIR=$2
+NUM=$3
+
+echo "********************************************************************************"
+echo " opuSCOM for Japan Open based on HELIOS base"
+echo " Created by Hidehisa Akiyama and Hiroki Shimora"
+echo " Copyright 2000-2007.  Hidehisa Akiyama"
+echo " Copyright 2007-2011.  Hidehisa Akiyama and Hiroki Shimora"
+echo " Copyright 2012-.  Katsuhiro Yamashita and Tomoharu Nakashima"
+echo " Copyright 2013-.  Satoshi Mifune"
+echo " Copyright 2014-.  Sho Tanaka"
+echo " Copyright 2015-.  Jordan Henrio"
+echo " Copyright 2016-.  Takuya Fukushima"
+echo " Copyright 2017-.  An Ohori and Yudai Suzuki"
+echo " Copyright 2018-.  Jiarun Zhong"
+echo " Copyright 2019-.  Ryota Kuga, Hiroki Omori and Masaki Yamaguchi"
+echo " Copyright 2020-.  Yoshifumi Kusunoki"
+echo " All rights reserved."
+echo "********************************************************************************"
+
+player="${BASEDIR}/src/sample_player"
+coach="${BASEDIR}/src/sample_coach"
+teamname="opuHam2020"
+host=${HOST}
+port=6000
+coach_port=6002
+
+player_conf="${BASEDIR}/src/player.conf"
+config_dir="${BASEDIR}/src/formations-dt"
+
+coach_conf="${BASEDIR}/src/coach.conf"
+team_graphic="--use_team_graphic on --team_graphic_file ${BASEDIR}/src/team_logo.xpm"
+
+max_chain_length=2
+max_evaluate_limit=1000
+evaluator_name="Default"
+knowledge_sharing="false"
+simple_mode="false"
+
+formation_conf_dir="${BASEDIR}/src/formations-dt"
+kick_distribution_dir="${BASEDIR}/src/kick_distribution/"
+kick_distribution_cluster_conf="${BASEDIR}/src/kick_distribution/cluster.conf"
+label_conf="${BASEDIR}/src/kick_distribution/label.conf"
+strategy_model="${BASEDIR}/src/strategy_model/grid_eval_strategy-6x4.model"
+neural_network_evaluator_dir="${BASEDIR}/src/neural_network_evaluator_model/"
+protocol_buf=${neural_network_evaluator_dir}"we-opp0.pb"
+fuzzy_parameter_dir="${BASEDIR}/src/fuzzy/"
+
+
+opt="--player-config ${player_conf} --config_dir ${config_dir}"
+opt="${opt} -h ${host} -p ${port} -t ${teamname}"
+opt="${opt} --formation-conf-dir ${formation_conf_dir}"
+opt="${opt} --evaluator-name ${evaluator_name}"
+opt="${opt} --max-chain-length ${max_chain_length}"
+opt="${opt} --max-evaluate-limit ${max_evaluate_limit}"
+opt="${opt} --strategy-model ${strategy_model}"
+opt="${opt} --neural-network-evaluator-dir ${neural_network_evaluator_dir}"
+opt="${opt} --protocol-buffer ${protocol_buf}"
+opt="${opt} --fuzzy-parameter-dir ${fuzzy_parameter_dir}"
+opt="${opt} --knowledge-sharing ${knowledge_sharing}"
+opt="${opt} --simple-mode ${simple_mode}"
+
+echo ${opt}
+
+ping -c 1 $host
+
+coachopt="--coach-config ${coach_conf}"
+coachopt="${coachopt} -h ${host} -p ${coach_port} -t ${teamname}"
+coachopt="${coachopt} --formation-conf-dir ${formation_conf_dir}"
+coachopt="${coachopt} --evaluator-name ${evaluator_name}"
+coachopt="${coachopt} --max-chain-length ${max_chain_length}"
+coachopt="${coachopt} --max-evaluate-limit ${max_evaluate_limit}"
+coachopt="${coachopt} --kick-distribution-dir ${kick_distribution_dir}"
+coachopt="${coachopt} --kick-distribution-cluster-conf ${kick_distribution_cluster_conf}"
+coachopt="${coachopt} --label-conf ${label_conf}"
+coachopt="${coachopt} --strategy-model ${strategy_model}"
+coachopt="${coachopt} --neural-network-evaluator-dir ${neural_network_evaluator_dir}"
+coachopt="${coachopt} --protocol-buffer ${protocol_buf}"
+coachopt="${coachopt} --fuzzy-parameter-dir ${fuzzy_parameter_dir}"
+coachopt="${coachopt} ${team_graphic}"
+
+case $NUM in
+    1)
+        $player $opt -g
+        ;;
+    12)
+        $coach $coachopt
+        ;;
+    *)
+        $player $opt
+        ;;
+esac
